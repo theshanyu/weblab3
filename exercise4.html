@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Number Guessing Game</title>
+        <script src="Guessing.js"></script>
+    </head>
+
+    <body>
+        <h1>Number Guessing Game</h1>
+        <p>Welcome!It's our guessing game time.And let me tell you the rule.<br/>
+            Rule:<br/>
+            1.First,the program will create a random number between 1 and 100,then player should guess the value of number.<br/>
+            2.Each turn,player have 10 chance to guess the number.If the player can't guess the correct number in 10 times,then lose. <br/>          
+            3.After each guessing,the program will give the tips for the number player guessed is bigger or lower than the random number.<br/>
+            4.There will display the numbers you have already guessed.<br/>
+        </p>
+        <label for="guessField">Input your guessing number:</label>
+        <input type="number" id="guessField" class="guessField" min="1" max="100">
+        <button id="submitGuess">submit</button>
+
+        <p>The number you guessed:<div id="guesses"></div></p>
+        <p id="result"></p>
+        <p id="tip"></p>
+        <br/>
+        <button id="restart">restartGame</button>
+        
+
+        <script>
+            let randomNumber = randomInt();
+            let count = 1;
+            
+            let guesses = [];
+
+            //获取html中元素
+            const guessField = document.getElementById('guessField');
+            const submitButton = document.getElementById('submitGuess');
+            const guessedNumber = document.getElementById('guesses');
+            const result = document.getElementById('result');
+            const tip = document.getElementById('tip');
+            const restartButton = document.getElementById('restart');
+
+            //提交按钮跟checkGuess做交互
+            submitButton.addEventListener('click',checkGuess);
+            restartButton.addEventListener('click',restartGame);
+
+            //检查Guess
+            function checkGuess(){
+                let remainingChance = 10-count;
+                let guessNumber = Number(guessField.value);
+                guesses.push(guessNumber);
+                guessedNumber.textContent = guesses.join(',');
+
+                if(guessNumber>100||guessNumber<0){
+                    tip.textContent = 'Please enter a number that between 1 and 100';
+                    tip.style.color = 'red';
+                    GameOver();
+                    return;
+                }
+
+                if(guessNumber === randomNumber){
+                    result.textContent = 'bingo!';
+                    result.style.color = 'green';
+                    tip.textContent = '';
+                    
+                    GameOver();
+                }else if(count === 10){
+                    result.textContent = 'Game Over!The correct number is ' + randomNumber +'.';
+                    result.style.color = 'red';
+                    tip.textContent = '';
+                    GameOver();
+                }else{
+                    result.textContent = 'Wrong num!You still have ' + remainingChance +' chance.';
+                    result.style.color = 'orange';
+                    if(guessNumber > randomNumber){
+                        tip.textContent = 'too big!';
+                    }else{
+                        tip.textContent = 'too small!';
+                    }
+                }
+                count++;
+                guessField.value = '';
+                guessField.focus();
+            }
+
+
+            function GameOver(){
+                guessField.disabled = true;
+                submitButton.disabled = true;
+            }
+
+            //restart game
+            function restartGame(){
+                count = 1;
+                guesses = [];
+                result.textContent = '';
+                tip.textContent = '';
+                guessedNumber.textContent = '';
+                guessField.textContent = '';
+                guessField.disabled = false;
+                submitButton.disabled = false;
+
+            }
+
+
+
+
+        </script>
+
+
+
+    </body>
+</html>
